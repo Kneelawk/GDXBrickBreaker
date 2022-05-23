@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LevelMaster {
+public class LevelManager {
     private static final float BRICK_WIDTH = 48;
     private static final float BRICK_HEIGHT = 24;
     private static final float BRICK_PADDING_X = 8;
@@ -25,7 +25,7 @@ public class LevelMaster {
 
     private List<Level> levels = new ArrayList<>();
 
-    public LevelMaster(FileHandle levelsFile) {
+    public LevelManager(FileHandle levelsFile) {
         try {
             loadLevels(levelsFile);
         } catch (IOException e) {

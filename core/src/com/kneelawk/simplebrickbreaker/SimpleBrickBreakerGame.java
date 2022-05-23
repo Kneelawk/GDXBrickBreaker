@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.kneelawk.simplebrickbreaker.level.LevelMaster;
+import com.kneelawk.simplebrickbreaker.level.LevelManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +34,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
     private TextureAtlas atlas;
     private Skin skin;
     private Stage stage;
-    private LevelMaster levelMaster;
+    private LevelManager levelManager;
     private ShapeRenderer shapeRenderer;
     private Ball ball;
     private Vector2 ballVelocity;
@@ -112,12 +112,12 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
     }
 
     private void setupLevel() {
-        levelMaster = new LevelMaster(Gdx.files.internal("levels.txt"));
+        levelManager = new LevelManager(Gdx.files.internal("levels.txt"));
         levelNumber = 0;
     }
 
     private void resetLevel() {
-        levelMaster.placeBricks(levelNumber, atlas, collidables, brickGroup, bricks, VIEW_WIDTH, VIEW_HEIGHT);
+        levelManager.placeBricks(levelNumber, atlas, collidables, brickGroup, bricks, VIEW_WIDTH, VIEW_HEIGHT);
     }
 
     private void resetGame() {
@@ -462,7 +462,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
 
     private void handleLevelComplete() {
         if (screenTouched && !Gdx.input.isTouched()) {
-            if (levelNumber + 1 < levelMaster.getLevelCount()) {
+            if (levelNumber + 1 < levelManager.getLevelCount()) {
                 levelNumber++;
                 resetGame();
                 state = GameState.STARTING;
