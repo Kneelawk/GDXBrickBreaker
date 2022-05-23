@@ -43,6 +43,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
     private GameState state = GameState.STARTING, oldState = GameState.STARTING;
     private final List<Collidable> collidables = new ArrayList<>();
     private boolean screenTouched = false;
+    private boolean gameScreenTouched = false;
     private Group textGroup;
     private Group gameOverGroup;
     private Group levelCompleteGroup;
@@ -200,7 +201,14 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         if (screenTouched && !Gdx.input.isTouched()) {
             state = GameState.RUNNING;
         }
-        screenTouched = Gdx.input.isTouched();
+
+        if (gameScreenTouched) {
+            // wait for the screen to stop being touched first before we start detecting screen
+            // touches here
+            gameScreenTouched = Gdx.input.isTouched();
+        } else {
+            screenTouched = Gdx.input.isTouched();
+        }
     }
 
     private float getTouchX() {
@@ -230,6 +238,10 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
             }
         }
         paddle.setX(velX + paddle.getX());
+
+        // update game-screen-touched so that we don't automatically detect a screen touch when the
+        // game is over if we're touching the screen right now
+        gameScreenTouched = Gdx.input.isTouched();
     }
 
     private void updateBall() {
@@ -434,7 +446,14 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
             setupRetry();
             state = GameState.STARTING;
         }
-        screenTouched = Gdx.input.isTouched();
+
+        if (gameScreenTouched) {
+            // wait for the screen to stop being touched first before we start detecting screen
+            // touches here
+            gameScreenTouched = Gdx.input.isTouched();
+        } else {
+            screenTouched = Gdx.input.isTouched();
+        }
     }
 
     private void setupRetry() {
@@ -451,7 +470,14 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
                 state = GameState.NO_MORE_LEVELS;
             }
         }
-        screenTouched = Gdx.input.isTouched();
+
+        if (gameScreenTouched) {
+            // wait for the screen to stop being touched first before we start detecting screen
+            // touches here
+            gameScreenTouched = Gdx.input.isTouched();
+        } else {
+            screenTouched = Gdx.input.isTouched();
+        }
     }
 
     @Override
