@@ -1,4 +1,4 @@
-apply plugin: "java"
+apply plugin: "java-library"
 
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -34,5 +34,6 @@ task dist(type: Jar) {
     with jar
 }
 
-
 dist.dependsOn classes
+
+java.targetCompatibility = JavaVersion.VERSION_1_8
