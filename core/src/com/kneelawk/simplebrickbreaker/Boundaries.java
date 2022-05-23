@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 public class Boundaries implements Collidable {
+    private static final int LINE_WIDTH = 4;
+
     private final float x;
     private final float y;
     private final float width;
@@ -37,10 +39,10 @@ public class Boundaries implements Collidable {
     public void render(ShapeRenderer renderer) {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(1, 1, 1, 1);
-        renderer.rectLine(x, y, x + width, y, 2);
-        renderer.rectLine(x, y, x, y + height, 2);
-        renderer.rectLine(x, y + height, x + width, y + height, 2);
-        renderer.rectLine(x + width, y, x + width, y + height, 2);
+        renderer.rectLine(x, y, x + width, y, LINE_WIDTH);
+        renderer.rectLine(x, y, x, y + height, LINE_WIDTH);
+        renderer.rectLine(x, y + height, x + width, y + height, LINE_WIDTH);
+        renderer.rectLine(x + width, y, x + width, y + height, LINE_WIDTH);
         renderer.end();
     }
 
