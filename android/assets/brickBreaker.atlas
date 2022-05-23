@@ -1,0 +1,90 @@
+
+brickBreaker.png
+size: 256,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+paddle
+  rotate: false
+  xy: 2, 28
+  size: 128, 32
+  orig: 128, 32
+  offset: 0, 0
+  index: -1
+ball
+  rotate: false
+  xy: 232, 110
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+brick0
+  rotate: false
+  xy: 2, 2
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick1
+  rotate: false
+  xy: 52, 2
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick2
+  rotate: false
+  xy: 102, 2
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick3
+  rotate: false
+  xy: 132, 102
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick4
+  rotate: false
+  xy: 132, 76
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick5
+  rotate: false
+  xy: 182, 102
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick6
+  rotate: false
+  xy: 132, 50
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick7
+  rotate: false
+  xy: 182, 76
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+brick8
+  rotate: false
+  xy: 182, 50
+  size: 48, 24
+  orig: 48, 24
+  offset: 0, 0
+  index: -1
+font
+  rotate: false
+  xy: 2, 62
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
