@@ -13,10 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kneelawk.simplebrickbreaker.level.LevelMaster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class SimpleBrickBreakerGame extends ApplicationAdapter {
     private static final float STARTING_SPEED = 4;
@@ -26,7 +29,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
 
     private ApplicationLogger log;
 
-    private Random rng = new Random();
+    private final Random rng = new Random();
     private SpriteBatch batch;
     private TextureAtlas atlas;
     private Skin skin;
@@ -37,7 +40,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
     private Vector2 ballVelocity;
     private Paddle paddle;
     private GameState state = GameState.STARTING, oldState = GameState.STARTING;
-    private List<Collidable> collidables = new ArrayList<>();
+    private final List<Collidable> collidables = new ArrayList<>();
     private boolean screenTouched = false;
     private Group textGroup;
     private Group gameOverGroup;
@@ -231,6 +234,9 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         Vector2 end = new Vector2(start).add(ballVelocity);
         float ballSpeed = ballVelocity.len();
 
+        Paddle collidedPaddle = null;
+        RayCastResult paddleCollision = null;
+
         boolean collided = false;
         boolean intersected;
         float distance;
@@ -309,6 +315,12 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
                     if (!collidableDuplicates.contains(result.getCollidable())) {
                         collidableDuplicates.add(result.getCollidable());
                         handleCollision(result.getCollidable(), result.getNormal());
+
+                        Collidable collidable = result.getCollidable();
+                        if (collidable instanceof Paddle) {
+                            collidedPaddle = (Paddle) collidable;
+                            paddleCollision = result;
+                        }
                     }
                 }
                 sumNormal.nor();
@@ -344,7 +356,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         ball.setPosition(end.x, end.y);
 
         if (collided) {
-            addBallBounce(ballVelocity);
+            addBallBounce(ballVelocity, collidedPaddle, paddleCollision);
         }
     }
 
@@ -401,11 +413,16 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         }
     }
 
-    private void addBallBounce(Vector2 vec) {
+    private void addBallBounce(Vector2 vec, Paddle collidedPaddle, RayCastResult paddleCollision) {
         if (vec.len() < 10) {
             vec.scl(1 + rng.nextFloat() * 0.05f);
         }
-        vec.setAngle(vec.angle() + (rng.nextFloat() * 10 - 5));
+
+        if (collidedPaddle != null && paddleCollision != null) {
+            collidedPaddle.adjustBallVelocity(vec, paddleCollision);
+        } else {
+            vec.setAngleDeg(vec.angleDeg() + (rng.nextFloat() * 10 - 5));
+        }
     }
 
     private void handleGameOver() {

@@ -53,4 +53,18 @@ public class Paddle extends Actor implements Collidable {
 
         return new RayCastResult(false, start, end, null, null, this);
     }
+
+    public void adjustBallVelocity(Vector2 vec, RayCastResult cast) {
+        if (!cast.getNormal().equals(new Vector2(0, 1))) {
+            return;
+        }
+
+        float speed = vec.len();
+
+        float offset = (cast.getIntersection().x - getX()) / getWidth() - 0.5f;
+
+        vec.x += offset * speed;
+
+        vec.setLength(speed);
+    }
 }
