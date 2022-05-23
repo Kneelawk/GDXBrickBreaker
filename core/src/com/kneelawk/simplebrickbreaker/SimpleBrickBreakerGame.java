@@ -39,6 +39,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
     private Ball ball;
     private Vector2 ballVelocity;
     private Paddle paddle;
+    private Boundaries boundaries;
     private GameState state = GameState.STARTING, oldState = GameState.STARTING;
     private final List<Collidable> collidables = new ArrayList<>();
     private boolean screenTouched = false;
@@ -58,7 +59,8 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         stage = new Stage(new FitViewport(VIEW_WIDTH, VIEW_HEIGHT), batch);
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
-        collidables.add(new Boundaries(0, 0, VIEW_WIDTH, VIEW_HEIGHT));
+        boundaries = new Boundaries(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
+        collidables.add(boundaries);
 
         setupBall();
         setupPaddle();
@@ -143,6 +145,7 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         update();
 
         stage.draw();
+        boundaries.render(shapeRenderer);
     }
 
     private void update() {

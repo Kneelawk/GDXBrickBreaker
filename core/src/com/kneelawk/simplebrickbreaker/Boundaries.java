@@ -1,6 +1,7 @@
 package com.kneelawk.simplebrickbreaker;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
@@ -31,6 +32,16 @@ public class Boundaries implements Collidable {
 
     public float getHeight() {
         return height;
+    }
+
+    public void render(ShapeRenderer renderer) {
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(1, 1, 1, 1);
+        renderer.rectLine(x, y, x + width, y, 2);
+        renderer.rectLine(x, y, x, y + height, 2);
+        renderer.rectLine(x, y + height, x + width, y + height, 2);
+        renderer.rectLine(x + width, y, x + width, y + height, 2);
+        renderer.end();
     }
 
     @Override
