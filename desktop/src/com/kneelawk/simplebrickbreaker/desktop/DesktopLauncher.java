@@ -3,7 +3,6 @@ package com.kneelawk.simplebrickbreaker.desktop;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.kneelawk.simplebrickbreaker.SimpleBrickBreakerGameMain;
-import com.kneelawk.simplebrickbreaker.game.RunningGameWorld;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {

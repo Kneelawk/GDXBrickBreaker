@@ -128,7 +128,7 @@ public class RunningGameWorld extends ScreenAdapter {
         nextLevelButton.addListener((FChangeListener) (event, actor) -> gameManager.startNextLevel());
         exitLevel2Button.addListener((FChangeListener) (event, actor) -> gameManager.exitLevel());
     }
-    
+
     private class InputHandler extends InputAdapter {
         @Override
         public boolean keyDown(int keycode) {
