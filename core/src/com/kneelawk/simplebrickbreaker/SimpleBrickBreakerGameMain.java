@@ -56,6 +56,12 @@ public class SimpleBrickBreakerGameMain extends Game implements GameManager {
     }
 
     @Override
+    public void markCompleted(int levelNumber) {
+        // does bounds checks in unlockLevel
+        assets.levelManager.unlockLevel(levelNumber + 1);
+    }
+
+    @Override
     public void dispose() {
         super.dispose();
 

@@ -26,7 +26,7 @@ public class GameAssets implements Disposable {
         // set font to be a size that's actually readable
         skin.getFont("default-font").getData().setScale(5f);
         shapeRenderer = new ShapeRenderer();
-        levelManager = new LevelManager(Gdx.files.internal("levels.txt"));
+        levelManager = new LevelManager();
     }
 
     @Override

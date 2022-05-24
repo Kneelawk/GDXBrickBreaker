@@ -1,5 +1,7 @@
 package com.kneelawk.simplebrickbreaker.game.level;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -15,6 +17,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LevelManager {
+    private static final String LEVELS_FILE = "levels.txt";
+    private static final String PREFERENCES_KEY = "com.kneelawk.simplebrickbreaker.game.level.LevelManager";
+
     private static final float BRICK_WIDTH = 48;
     private static final float BRICK_HEIGHT = 24;
     private static final float BRICK_PADDING_X = 8;
@@ -23,11 +28,14 @@ public class LevelManager {
     private static final float BRICK_SPACING_Y = BRICK_HEIGHT + BRICK_PADDING_Y;
     private static final Pattern LEVEL_START = Pattern.compile("^\\$level (.+)$");
 
-    private List<Level> levels = new ArrayList<>();
+    private final Preferences unlockedLevels;
+    private final List<Level> levels = new ArrayList<>();
 
-    public LevelManager(FileHandle levelsFile) {
+    public LevelManager() {
+        unlockedLevels = Gdx.app.getPreferences(PREFERENCES_KEY);
+
         try {
-            loadLevels(levelsFile);
+            loadLevels(Gdx.files.internal(LEVELS_FILE));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -61,6 +69,17 @@ public class LevelManager {
 
         if (currentLevel != null) {
             levels.add(currentLevel.build());
+        }
+    }
+
+    public boolean isLevelUnlocked(int levelNumber) {
+        return levelNumber == 0 || unlockedLevels.contains(levels.get(levelNumber).getName());
+    }
+
+    public void unlockLevel(int levelNumber) {
+        if (levelNumber >= 0 && levelNumber < levels.size()) {
+            unlockedLevels.putBoolean(levels.get(levelNumber).getName(), true);
+            unlockedLevels.flush();
         }
     }
 

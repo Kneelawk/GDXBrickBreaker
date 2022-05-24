@@ -5,9 +5,27 @@
     }
   }
   com.badlogic.gdx.graphics.Color: {
+    black: {
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    }
+    disabled: {
+      r: 0.62666667
+      g: 0.62666667
+      b: 0.62666667
+      a: 1
+    }
     green: {
       r: 0
       g: 1
+      b: 0
+      a: 1
+    }
+    red: {
+      r: 1
+      g: 0
       b: 0
       a: 1
     }
@@ -17,22 +35,22 @@
       b: 1
       a: 1
     }
-    red: {
-      r: 1
-      g: 0
-      b: 0
-      a: 1
-    }
-    black: {
-      r: 0
-      g: 0
-      b: 0
-      a: 1
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+    button-disabled: {
+      name: button
+      color: {
+        r: 0.62666667
+        g: 0.62666667
+        b: 0.62666667
+        a: 1
+      }
     }
   }
   com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
     default: {
       up: button
+      disabled: button-disabled
     }
   }
   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
@@ -41,10 +59,42 @@
       fontColor: white
     }
   }
+  com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+    default: {
+      font: default-font
+      fontColorSelected: white
+      fontColorUnselected: white
+      selection: button
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+    default: {
+      background: button
+      hScrollKnob: button
+      vScrollKnob: button
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+    default: {
+      font: default-font
+      fontColor: white
+      background: button
+      scrollStyle: default
+      listStyle: default
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+    default-horizontal: {
+      background: button
+      knob: button
+    }
+  }
   com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
     default: {
       font: default-font
+      disabledFontColor: disabled
       up: button
+      disabled: button-disabled
     }
   }
   com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {

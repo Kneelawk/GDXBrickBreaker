@@ -466,6 +466,7 @@ public class RunningGameWorld extends ScreenAdapter {
         bricks.remove(brick);
 
         if (bricks.isEmpty()) {
+            gameManager.markCompleted(levelNumber);
             state = GameState.LEVEL_COMPLETE;
         }
     }
