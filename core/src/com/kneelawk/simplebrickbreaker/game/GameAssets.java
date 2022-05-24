@@ -24,7 +24,7 @@ public class GameAssets implements Disposable {
         atlas = new TextureAtlas(Gdx.files.internal("brickBreaker.atlas"));
         skin = new Skin(Gdx.files.internal("brickBreaker.json"), atlas);
         // set font to be a size that's actually readable
-        skin.getFont("default-font").getData().setScale(3f);
+        skin.getFont("default-font").getData().setScale(5f);
         shapeRenderer = new ShapeRenderer();
         levelManager = new LevelManager(Gdx.files.internal("levels.txt"));
     }

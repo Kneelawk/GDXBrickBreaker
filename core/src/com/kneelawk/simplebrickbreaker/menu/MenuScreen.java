@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kneelawk.simplebrickbreaker.GameManager;
@@ -14,13 +15,16 @@ import com.kneelawk.simplebrickbreaker.game.GameAssets;
 import com.kneelawk.simplebrickbreaker.util.FChangeListener;
 
 public class MenuScreen extends ScreenAdapter {
+    private static final int VIEWPORT_WITH = 1280;
+    private static final int VIEWPORT_HEIGHT = 720;
+
     private final Viewport viewport;
     private final Stage stage;
 
     public MenuScreen(GameManager gameManager, GameAssets assets) {
         Skin skin = assets.skin;
 
-        viewport = new ScreenViewport();
+        viewport = new FitViewport(VIEWPORT_WITH, VIEWPORT_HEIGHT);
         stage = new Stage(viewport);
 
         Table table = new Table();

@@ -2,6 +2,9 @@ package com.kneelawk.simplebrickbreaker.game;
 
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,10 +15,14 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kneelawk.simplebrickbreaker.GameManager;
 import com.kneelawk.simplebrickbreaker.game.level.LevelManager;
+import com.kneelawk.simplebrickbreaker.util.FChangeListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +47,7 @@ public class RunningGameWorld extends ScreenAdapter {
     private final Stage stage;
     private final LevelManager levelManager;
     private final ShapeRenderer shapeRenderer;
+    private final InputHandler inputHandler = new InputHandler();
     private final Ball ball;
     private Vector2 ballVelocity;
     private final Paddle paddle;
@@ -49,8 +57,8 @@ public class RunningGameWorld extends ScreenAdapter {
     private boolean screenTouched = false;
     private boolean gameScreenTouched = false;
     private Group textGroup;
-    private Group gameOverGroup;
-    private Group levelCompleteGroup;
+    private Table gameOverUi;
+    private Table levelCompleteUi;
     private final Group brickGroup;
     private final Set<Brick> bricks;
     private final int levelNumber;
@@ -83,33 +91,67 @@ public class RunningGameWorld extends ScreenAdapter {
         brickGroup = new Group();
         stage.addActor(brickGroup);
 
-        setupLabels();
+        setupUI();
     }
 
-    private void setupLabels() {
+    private void setupUI() {
         textGroup = new Group();
+        textGroup.setSize(VIEW_WIDTH, VIEW_HEIGHT);
         stage.addActor(textGroup);
 
-        gameOverGroup = new Group();
+        gameOverUi = new Table();
+        gameOverUi.setFillParent(true);
         Label gameOverLabel = new Label("Game Over", skin);
-        gameOverLabel.setPosition((VIEW_WIDTH - gameOverLabel.getWidth()) / 2f,
-                (VIEW_HEIGHT - gameOverLabel.getHeight()) / 2f);
-        Label pressToRetryLabel = new Label("Press to Retry", skin);
-        gameOverGroup.addActor(gameOverLabel);
-        pressToRetryLabel.setPosition((VIEW_WIDTH - pressToRetryLabel.getWidth()) / 2f,
-                (VIEW_HEIGHT - pressToRetryLabel.getHeight()) / 2f - 20);
-        gameOverGroup.addActor(pressToRetryLabel);
+        gameOverLabel.setAlignment(Align.center);
+        gameOverUi.add(gameOverLabel).fillX().uniformX();
+        gameOverUi.row().pad(10);
+        TextButton retryButton = new TextButton("Retry", skin);
+        gameOverUi.add(retryButton).fillX().uniformX();
+        gameOverUi.row().pad(10);
+        TextButton exitLevelButton = new TextButton("Exit Level", skin);
+        gameOverUi.add(exitLevelButton).fillX().uniformX();
 
-        levelCompleteGroup = new Group();
+        retryButton.addListener((FChangeListener) (event, actor) -> handleRetry());
+        exitLevelButton.addListener((FChangeListener) (event, actor) -> gameManager.exitLevel());
+
+        levelCompleteUi = new Table();
+        levelCompleteUi.setFillParent(true);
         Label levelCompleteLabel = new Label("Level Complete", skin);
-        levelCompleteLabel.setPosition((VIEW_WIDTH - levelCompleteLabel.getWidth()) / 2f,
-                (VIEW_HEIGHT - levelCompleteLabel.getHeight()) / 2f);
-        levelCompleteGroup.addActor(levelCompleteLabel);
+        levelCompleteUi.add(levelCompleteLabel).fillX().uniformX();
+        levelCompleteUi.row().pad(10);
+        TextButton nextLevelButton = new TextButton("Next Level", skin);
+        levelCompleteUi.add(nextLevelButton).fillX().uniformX();
+        levelCompleteUi.row().pad(10);
+        TextButton exitLevel2Button = new TextButton("Exit Level", skin);
+        levelCompleteUi.add(exitLevel2Button).fillX().uniformX();
+
+        nextLevelButton.addListener((FChangeListener) (event, actor) -> gameManager.startNextLevel());
+        exitLevel2Button.addListener((FChangeListener) (event, actor) -> gameManager.exitLevel());
+    }
+    
+    private class InputHandler extends InputAdapter {
+        @Override
+        public boolean keyDown(int keycode) {
+            if (keycode == Input.Keys.BACK) {
+                gameManager.exitLevel();
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     @Override
     public void show() {
+        Gdx.input.setCatchKey(Input.Keys.BACK, true);
+        Gdx.input.setInputProcessor(new InputMultiplexer(inputHandler, stage));
         resetGame();
+    }
+
+    @Override
+    public void hide() {
+        Gdx.input.setCatchKey(Input.Keys.BACK, false);
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
@@ -164,24 +206,22 @@ public class RunningGameWorld extends ScreenAdapter {
 
         if (state == GameState.GAME_OVER) {
             stage.act();
-            handleGameOver();
             if (oldState != GameState.GAME_OVER) {
-                textGroup.addActor(gameOverGroup);
+                textGroup.addActor(gameOverUi);
             }
         }
         if (state != GameState.GAME_OVER && oldState == GameState.GAME_OVER) {
-            textGroup.removeActor(gameOverGroup);
+            textGroup.removeActor(gameOverUi);
         }
 
         if (state == GameState.LEVEL_COMPLETE) {
             stage.act();
-            handleLevelComplete();
             if (oldState != GameState.LEVEL_COMPLETE) {
-                textGroup.addActor(levelCompleteGroup);
+                textGroup.addActor(levelCompleteUi);
             }
         }
         if (state != GameState.LEVEL_COMPLETE && oldState == GameState.LEVEL_COMPLETE) {
-            textGroup.removeActor(levelCompleteGroup);
+            textGroup.removeActor(levelCompleteUi);
         }
 
         oldState = state;
@@ -442,39 +482,9 @@ public class RunningGameWorld extends ScreenAdapter {
         }
     }
 
-    private void handleGameOver() {
-        if (screenTouched && !Gdx.input.isTouched()) {
-            resetGame();
-            setupRetry();
-            state = GameState.STARTING;
-        }
-
-        if (gameScreenTouched) {
-            // wait for the screen to stop being touched first before we start detecting screen
-            // touches here
-            gameScreenTouched = Gdx.input.isTouched();
-        } else {
-            screenTouched = Gdx.input.isTouched();
-        }
-    }
-
-    private void setupRetry() {
-        // we'll just leave everything the same for a retry for now
-    }
-
-    private void handleLevelComplete() {
-        if (screenTouched && !Gdx.input.isTouched()) {
-            // ultimately ends up disposing this running game
-            gameManager.startNextLevel();
-        }
-
-        if (gameScreenTouched) {
-            // wait for the screen to stop being touched first before we start detecting screen
-            // touches here
-            gameScreenTouched = Gdx.input.isTouched();
-        } else {
-            screenTouched = Gdx.input.isTouched();
-        }
+    private void handleRetry() {
+        resetGame();
+        state = GameState.STARTING;
     }
 
     @Override
