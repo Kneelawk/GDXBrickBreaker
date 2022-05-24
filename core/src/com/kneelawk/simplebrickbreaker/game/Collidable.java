@@ -1,4 +1,4 @@
-package com.kneelawk.simplebrickbreaker;
+package com.kneelawk.simplebrickbreaker.game;
 
 import com.badlogic.gdx.math.Vector2;
 

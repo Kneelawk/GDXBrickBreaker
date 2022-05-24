@@ -1,8 +1,8 @@
-package com.kneelawk.simplebrickbreaker;
+package com.kneelawk.simplebrickbreaker.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -13,7 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.kneelawk.simplebrickbreaker.level.LevelManager;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kneelawk.simplebrickbreaker.GameManager;
+import com.kneelawk.simplebrickbreaker.game.level.LevelManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,25 +23,27 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class SimpleBrickBreakerGame extends ApplicationAdapter {
+public class RunningGameWorld extends ScreenAdapter {
     private static final float STARTING_SPEED = 4;
 
     private static final int VIEW_WIDTH = 1280;
     private static final int VIEW_HEIGHT = 720;
 
-    private ApplicationLogger log;
+    private final ApplicationLogger log;
+
+    private final GameManager gameManager;
 
     private final Random rng = new Random();
-    private SpriteBatch batch;
-    private TextureAtlas atlas;
-    private Skin skin;
-    private Stage stage;
-    private LevelManager levelManager;
-    private ShapeRenderer shapeRenderer;
-    private Ball ball;
+    private final TextureAtlas atlas;
+    private final Skin skin;
+    private final Viewport viewport;
+    private final Stage stage;
+    private final LevelManager levelManager;
+    private final ShapeRenderer shapeRenderer;
+    private final Ball ball;
     private Vector2 ballVelocity;
-    private Paddle paddle;
-    private Boundaries boundaries;
+    private final Paddle paddle;
+    private final Boundaries boundaries;
     private GameState state = GameState.STARTING, oldState = GameState.STARTING;
     private final List<Collidable> collidables = new ArrayList<>();
     private boolean screenTouched = false;
@@ -47,45 +51,39 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
     private Group textGroup;
     private Group gameOverGroup;
     private Group levelCompleteGroup;
-    private Group brickGroup;
-    private Set<Brick> bricks;
-    private int levelNumber;
+    private final Group brickGroup;
+    private final Set<Brick> bricks;
+    private final int levelNumber;
 
-    @Override
-    public void create() {
-        log = Gdx.app.getApplicationLogger();
-        batch = new SpriteBatch();
-        atlas = new TextureAtlas(Gdx.files.internal("brickBreaker.atlas"));
-        skin = new Skin(Gdx.files.internal("brickBreaker.json"), atlas);
-        stage = new Stage(new FitViewport(VIEW_WIDTH, VIEW_HEIGHT), batch);
-        shapeRenderer = new ShapeRenderer();
+    public RunningGameWorld(GameManager gameManager, GameAssets assets, int levelNumber) {
+        this.gameManager = gameManager;
+        this.levelManager = assets.levelManager;
+        this.levelNumber = levelNumber;
+
+        log = assets.log;
+        SpriteBatch batch = assets.batch;
+        atlas = assets.atlas;
+        skin = assets.skin;
+        viewport = new FitViewport(VIEW_WIDTH, VIEW_HEIGHT);
+        stage = new Stage(viewport, batch);
+        stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
+        shapeRenderer = assets.shapeRenderer;
         shapeRenderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
         boundaries = new Boundaries(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
         collidables.add(boundaries);
 
-        setupBall();
-        setupPaddle();
-        setupBricks();
-        setupLabels();
-        setupLevel();
-        resetGame();
-    }
-
-    private void setupBall() {
         ball = new Ball(atlas);
         stage.addActor(ball);
-    }
 
-    private void setupPaddle() {
         paddle = new Paddle(atlas);
         stage.addActor(paddle);
         collidables.add(paddle);
-    }
 
-    private void setupBricks() {
         bricks = new HashSet<>();
         brickGroup = new Group();
         stage.addActor(brickGroup);
+
+        setupLabels();
     }
 
     private void setupLabels() {
@@ -93,31 +91,31 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         stage.addActor(textGroup);
 
         gameOverGroup = new Group();
-        gameOverGroup.setScale(3f);
         Label gameOverLabel = new Label("Game Over", skin);
-        gameOverLabel.setPosition((VIEW_WIDTH - gameOverLabel.getWidth() * 3) / 6f,
-                (VIEW_HEIGHT - gameOverLabel.getHeight() * 3) / 6f);
+        gameOverLabel.setPosition((VIEW_WIDTH - gameOverLabel.getWidth()) / 2f,
+                (VIEW_HEIGHT - gameOverLabel.getHeight()) / 2f);
         Label pressToRetryLabel = new Label("Press to Retry", skin);
         gameOverGroup.addActor(gameOverLabel);
-        pressToRetryLabel.setPosition((VIEW_WIDTH - pressToRetryLabel.getWidth() * 3) / 6f,
-                (VIEW_HEIGHT - pressToRetryLabel.getHeight() * 3) / 6f - 20);
+        pressToRetryLabel.setPosition((VIEW_WIDTH - pressToRetryLabel.getWidth()) / 2f,
+                (VIEW_HEIGHT - pressToRetryLabel.getHeight()) / 2f - 20);
         gameOverGroup.addActor(pressToRetryLabel);
 
         levelCompleteGroup = new Group();
-        levelCompleteGroup.setScale(3f);
         Label levelCompleteLabel = new Label("Level Complete", skin);
-        levelCompleteLabel.setPosition((VIEW_WIDTH - levelCompleteLabel.getWidth() * 3) / 6f,
-                (VIEW_HEIGHT - levelCompleteLabel.getHeight() * 3) / 6f);
+        levelCompleteLabel.setPosition((VIEW_WIDTH - levelCompleteLabel.getWidth()) / 2f,
+                (VIEW_HEIGHT - levelCompleteLabel.getHeight()) / 2f);
         levelCompleteGroup.addActor(levelCompleteLabel);
     }
 
-    private void setupLevel() {
-        levelManager = new LevelManager(Gdx.files.internal("levels.txt"));
-        levelNumber = 0;
+    @Override
+    public void show() {
+        resetGame();
     }
 
-    private void resetLevel() {
-        levelManager.placeBricks(levelNumber, atlas, collidables, brickGroup, bricks, VIEW_WIDTH, VIEW_HEIGHT);
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
     }
 
     private void resetGame() {
@@ -138,8 +136,12 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
         paddle.setPosition((VIEW_WIDTH - paddle.getWidth()) / 2, 40);
     }
 
+    private void resetLevel() {
+        levelManager.placeBricks(levelNumber, atlas, collidables, brickGroup, bricks, VIEW_WIDTH, VIEW_HEIGHT);
+    }
+
     @Override
-    public void render() {
+    public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -212,11 +214,11 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
     }
 
     private float getTouchX() {
-        return ((float) Gdx.input.getX()) * VIEW_WIDTH / Gdx.graphics.getWidth();
+        return ((float) Gdx.input.getX() - viewport.getLeftGutterWidth()) * VIEW_WIDTH / viewport.getScreenWidth();
     }
 
     private float getTouchY() {
-        return ((float) Gdx.input.getY()) * VIEW_HEIGHT / Gdx.graphics.getHeight();
+        return ((float) Gdx.input.getY() - viewport.getTopGutterHeight()) * VIEW_HEIGHT / viewport.getScreenHeight();
     }
 
     private void updatePaddle() {
@@ -462,13 +464,8 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
 
     private void handleLevelComplete() {
         if (screenTouched && !Gdx.input.isTouched()) {
-            if (levelNumber + 1 < levelManager.getLevelCount()) {
-                levelNumber++;
-                resetGame();
-                state = GameState.STARTING;
-            } else {
-                state = GameState.NO_MORE_LEVELS;
-            }
+            // ultimately ends up disposing this running game
+            gameManager.startNextLevel();
         }
 
         if (gameScreenTouched) {
@@ -482,8 +479,6 @@ public class SimpleBrickBreakerGame extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        shapeRenderer.dispose();
-        batch.dispose();
-        atlas.dispose();
+        stage.dispose();
     }
 }

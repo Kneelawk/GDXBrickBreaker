@@ -1,10 +1,10 @@
-package com.kneelawk.simplebrickbreaker.level;
+package com.kneelawk.simplebrickbreaker.game.level;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.kneelawk.simplebrickbreaker.Brick;
-import com.kneelawk.simplebrickbreaker.Collidable;
+import com.kneelawk.simplebrickbreaker.game.Brick;
+import com.kneelawk.simplebrickbreaker.game.Collidable;
 
 import java.io.BufferedReader;
 import java.io.IOException;

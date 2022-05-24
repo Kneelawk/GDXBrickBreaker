@@ -1,4 +1,4 @@
-package com.kneelawk.simplebrickbreaker.level;
+package com.kneelawk.simplebrickbreaker.game.level;
 
 public class LevelSpace implements ILevelComponent {
     public static final LevelSpace INSTANCE = new LevelSpace();

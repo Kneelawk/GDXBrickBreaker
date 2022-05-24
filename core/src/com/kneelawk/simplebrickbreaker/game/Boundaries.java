@@ -1,6 +1,5 @@
-package com.kneelawk.simplebrickbreaker;
+package com.kneelawk.simplebrickbreaker.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;

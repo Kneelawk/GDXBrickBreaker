@@ -1,4 +1,4 @@
-package com.kneelawk.simplebrickbreaker;
+package com.kneelawk.simplebrickbreaker.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -7,12 +7,34 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class Paddle extends Actor implements Collidable {
-    private TextureRegion texture;
+public class Brick extends Actor implements Collidable {
+    private static final int TEXTURE_COUNT = 9;
 
-    public Paddle(TextureAtlas atlas) {
-        texture = atlas.findRegion("paddle");
-        setSize(texture.getRegionWidth(), texture.getRegionHeight());
+    private TextureRegion[] textures;
+    private int hp;
+
+    public Brick(TextureAtlas atlas, int hp) {
+        textures = new TextureRegion[TEXTURE_COUNT];
+        for (int i = 0; i < TEXTURE_COUNT; i++) {
+            textures[i] = atlas.findRegion("brick" + i);
+        }
+        this.hp = hp;
+
+        setSize(textures[0].getRegionWidth(), textures[0].getRegionHeight());
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public void decrementHp() {
+        if (hp > 0) {
+            hp--;
+        }
     }
 
     /**
@@ -27,7 +49,7 @@ public class Paddle extends Actor implements Collidable {
      */
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+        batch.draw(textures[hp], getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
@@ -52,19 +74,5 @@ public class Paddle extends Actor implements Collidable {
         }
 
         return new RayCastResult(false, start, end, null, null, this);
-    }
-
-    public void adjustBallVelocity(Vector2 vec, RayCastResult cast) {
-        if (!cast.getNormal().equals(new Vector2(0, 1))) {
-            return;
-        }
-
-        float speed = vec.len();
-
-        float offset = (cast.getIntersection().x - getX()) / getWidth() - 0.5f;
-
-        vec.x += offset * speed;
-
-        vec.setLength(speed);
     }
 }

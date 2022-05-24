@@ -1,4 +1,4 @@
-package com.kneelawk.simplebrickbreaker.level;
+package com.kneelawk.simplebrickbreaker.game.level;
 
 public class LevelBrick implements ILevelComponent {
     private final int hp;

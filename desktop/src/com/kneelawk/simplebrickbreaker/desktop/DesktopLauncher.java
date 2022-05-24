@@ -2,7 +2,8 @@ package com.kneelawk.simplebrickbreaker.desktop;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.kneelawk.simplebrickbreaker.SimpleBrickBreakerGame;
+import com.kneelawk.simplebrickbreaker.SimpleBrickBreakerGameMain;
+import com.kneelawk.simplebrickbreaker.game.RunningGameWorld;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {
@@ -11,6 +12,6 @@ public class DesktopLauncher {
         config.setForegroundFPS(60);
         config.setIdleFPS(15);
         config.setTitle("Simple Brick Breaker");
-        new Lwjgl3Application(new SimpleBrickBreakerGame(), config);
+        new Lwjgl3Application(new SimpleBrickBreakerGameMain(), config);
     }
 }

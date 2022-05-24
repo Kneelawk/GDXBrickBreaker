@@ -1,4 +1,4 @@
-package com.kneelawk.simplebrickbreaker.level;
+package com.kneelawk.simplebrickbreaker.game.level;
 
 import java.util.ArrayList;
 import java.util.Arrays;
