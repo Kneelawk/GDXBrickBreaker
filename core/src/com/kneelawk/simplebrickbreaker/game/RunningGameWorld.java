@@ -101,13 +101,14 @@ public class RunningGameWorld extends ScreenAdapter {
 
         gameOverUi = new Table();
         gameOverUi.setFillParent(true);
+        gameOverUi.row().pad(10, 0, 10, 0);
         Label gameOverLabel = new Label("Game Over", skin);
         gameOverLabel.setAlignment(Align.center);
         gameOverUi.add(gameOverLabel).fillX().uniformX();
-        gameOverUi.row().pad(10);
+        gameOverUi.row().pad(10, 0, 10, 0);
         TextButton retryButton = new TextButton("Retry", skin);
         gameOverUi.add(retryButton).fillX().uniformX();
-        gameOverUi.row().pad(10);
+        gameOverUi.row().pad(10, 0, 10, 0);
         TextButton exitLevelButton = new TextButton("Exit Level", skin);
         gameOverUi.add(exitLevelButton).fillX().uniformX();
 
@@ -116,12 +117,13 @@ public class RunningGameWorld extends ScreenAdapter {
 
         levelCompleteUi = new Table();
         levelCompleteUi.setFillParent(true);
+        levelCompleteUi.row().pad(10, 0, 10, 0);
         Label levelCompleteLabel = new Label("Level Complete", skin);
         levelCompleteUi.add(levelCompleteLabel).fillX().uniformX();
-        levelCompleteUi.row().pad(10);
+        levelCompleteUi.row().pad(10, 0, 10, 0);
         TextButton nextLevelButton = new TextButton("Next Level", skin);
         levelCompleteUi.add(nextLevelButton).fillX().uniformX();
-        levelCompleteUi.row().pad(10);
+        levelCompleteUi.row().pad(10, 0, 10, 0);
         TextButton exitLevel2Button = new TextButton("Exit Level", skin);
         levelCompleteUi.add(exitLevel2Button).fillX().uniformX();
 

@@ -43,33 +43,33 @@ public class MenuScreen extends ScreenAdapter {
         mainMenu.setFillParent(true);
         stage.addActor(mainMenu);
 
+        mainMenu.row().pad(10, 0, 10, 0);
         TextButton newGameButton = new TextButton("New Game", skin);
         mainMenu.add(newGameButton).fillX().uniformX();
-        mainMenu.row().pad(10);
 
+        mainMenu.row().pad(10, 0, 10, 0);
         TextButton levelsButton = new TextButton("Levels", skin);
         mainMenu.add(levelsButton).fillX().uniformX();
-        mainMenu.row().pad(10);
 
+        mainMenu.row().pad(10, 0, 10, 0);
         TextButton exitButton = new TextButton("Exit", skin);
         mainMenu.add(exitButton).fillX().uniformX();
 
         Table levelsMenu = new Table();
         levelsMenu.setFillParent(true);
 
+        levelsMenu.row().pad(10, 0, 10, 0);
         TextButton backToMainMenuButton = new TextButton("Back to Main Menu", skin);
         levelsMenu.add(backToMainMenuButton).fillX().uniformX();
-        levelsMenu.row().pad(10);
 
+        levelsMenu.row().pad(10, 0, 10, 0);
         Table levels = new Table();
         levels.setFillParent(true);
         ScrollPane levelsScroll = new ScrollPane(levels);
         levelsMenu.add(levelsScroll).fill().uniformX();
 
         for (int i = 0; i < levelManager.getLevelCount(); i++) {
-            if (i > 0) {
-                levels.row().pad(10);
-            }
+            levels.row().pad(10, 0, 10, 0);
 
             Level level = levelManager.getLevel(i);
             TextButton levelButton = new TextButton(level.getName(), skin);
