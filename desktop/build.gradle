@@ -35,6 +35,10 @@ task dist(type: Jar) {
     from {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    from("../LICENSE")
+    exclude("META-INF/INDEX.LIST")
+    exclude("META-INF/versions/9/module-info.class")
+    duplicatesStrategy DuplicatesStrategy.WARN
     with jar
 }
 
